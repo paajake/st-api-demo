@@ -7,7 +7,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,12 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-			throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
-	}
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -40,9 +33,13 @@ public class SecurityConfig {
 						.cors(AbstractHttpConfigurer::disable)
 						.csrf(AbstractHttpConfigurer::disable)
 						.authorizeHttpRequests(auth -> auth
+								.requestMatchers("/error").permitAll()
+								.requestMatchers("/actuator/**").permitAll()
+
 								.requestMatchers(HttpMethod.POST, "/users").permitAll()
-								.requestMatchers(HttpMethod.POST, "/urls/redirect/**").permitAll()
-								.anyRequest().permitAll()
+								.requestMatchers(HttpMethod.GET, "/urls/redirect/**").permitAll()
+
+								.anyRequest().authenticated()
 						)
 						.authenticationManager(authenticationManager)
 						.httpBasic(Customizer.withDefaults())

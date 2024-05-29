@@ -2,14 +2,11 @@ package dev.paajake.url_shortener.url;
 
 import com.google.common.hash.Hashing;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -22,7 +19,7 @@ public class UrlService {
 	}
 
 	private boolean urlHashIsUnique(final String hash) {
-		return urlRepository.findByShortUrlPath(hash).isEmpty();
+		return !Objects.isNull(urlRepository.findByShortUrlPath(hash));
 	}
 
 	private String getUrlPathHash(final String fullUrl) {
@@ -49,19 +46,17 @@ public class UrlService {
 				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "URL with this ID was NOT Found!"));
 	}
 
-	public ResponseEntity<Void> redirect(String shortUrlPath) {
-		List<Url> urls = urlRepository.findByShortUrlPath(shortUrlPath);
-		if (urls.isEmpty()) {
+	public String getFullUrlForRedirect(String shortUrlPath) {
+		Url url = urlRepository.findByShortUrlPath(shortUrlPath);
+		if (Objects.isNull(url)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
 					"Unknown Destination URL with this short URL Path: " + shortUrlPath);
 		}
 
-		Url url = urls.getFirst();
 		url.setClicks(url.getClicks() + 1);
 		urlRepository.save(url);
 
-		return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, urls.getFirst()
-				.getFullUrl()).build();
+		return url.getFullUrl();
 	}
 
 	public Url createUrl(Url url) {
@@ -73,8 +68,6 @@ public class UrlService {
 						"The short url already exists, kindly pass a unique url path");
 			}
 		}
-
-
 
 		return urlRepository.save(url);
 	}

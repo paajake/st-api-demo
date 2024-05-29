@@ -1,5 +1,8 @@
 package dev.paajake.url_shortener.user;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,22 +16,23 @@ public class UserController {
 	}
 
 	@GetMapping("/{id}")
-	public User getUrlById(@PathVariable Long id) {
-		return userService.getUserById(id);
+	public ResponseEntity<User> getUrlById(@PathVariable Long id) {
+		return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
 	}
 
 	@PostMapping
-	public User createUser(@RequestBody User user) {
-		return userService.createUser(user);
+	public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
+		return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
-	public User editUser(@RequestBody User user, @PathVariable Long id) {
-		return userService.editUser(user, id);
+	public ResponseEntity<User> editUser(@RequestBody @Valid User user, @PathVariable Long id) {
+		return new ResponseEntity<>(userService.editUser(user, id), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	public void deleteUser(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 		userService.deleteUser(id);
+		return new ResponseEntity<>(HttpStatus.valueOf(204));
 	}
 }
