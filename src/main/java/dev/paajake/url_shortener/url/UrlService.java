@@ -1,6 +1,7 @@
 package dev.paajake.url_shortener.url;
 
 import com.google.common.hash.Hashing;
+import dev.paajake.url_shortener.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,13 +14,15 @@ import java.util.Objects;
 @Slf4j
 public class UrlService {
 	private final UrlRepository urlRepository;
+	private final UserRepository userRepository;
 
-	public UrlService(UrlRepository urlRepository) {
+	public UrlService(UrlRepository urlRepository, UserRepository userRepository) {
 		this.urlRepository = urlRepository;
+		this.userRepository = userRepository;
 	}
 
 	private boolean urlHashIsUnique(final String hash) {
-		return !Objects.isNull(urlRepository.findByShortUrlPath(hash));
+		return Objects.isNull(urlRepository.findByShortUrlPath(hash));
 	}
 
 	private String getUrlPathHash(final String fullUrl) {
@@ -59,7 +62,7 @@ public class UrlService {
 		return url.getFullUrl();
 	}
 
-	public Url createUrl(Url url) {
+	public Url createUrl(Url url, final String username) {
 		if (url.getShortUrlPath() == null || url.getShortUrlPath().isEmpty()) {
 			url.setShortUrlPath(getUrlPathHash(url.getFullUrl()));
 		} else {
@@ -68,14 +71,15 @@ public class UrlService {
 						"The short url already exists, kindly pass a unique url path");
 			}
 		}
-
+		url.setUser(userRepository.findUserByUsername(username));
 		return urlRepository.save(url);
 	}
 
-	public Url editUrl(Url url, Long id) {
+	public Url editUrl(Url url, Long id, final String username) {
 
 		return urlRepository.findById(id)
 				.map(urlTobeUpdated -> {
+					url.setUser(userRepository.findUserByUsername(username));
 
 					if (!Objects.isNull(url.getShortUrlPath()) && !url.getShortUrlPath().isEmpty()) {
 						if (!urlHashIsUnique(url.getShortUrlPath().toLowerCase())) {
