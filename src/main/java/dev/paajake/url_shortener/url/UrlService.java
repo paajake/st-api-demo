@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -47,6 +48,10 @@ public class UrlService {
 	public Url getUrlById(Long id) {
 		return urlRepository.findById(id).orElseThrow(
 				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "URL with this ID was NOT Found!"));
+	}
+
+	public List<Url> getAllUrls() {
+		return urlRepository.findAll();
 	}
 
 	public String getFullUrlForRedirect(String shortUrlPath) {

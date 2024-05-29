@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 public class UserService {
 	private final UserRepository userRepository;
@@ -19,6 +21,10 @@ public class UserService {
 		user.setPassword(encodedPassword);
 		user.setRole(Role.USER);
 		return userRepository.save(user);
+	}
+
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
 	}
 
 	public User getUserById(Long id) {

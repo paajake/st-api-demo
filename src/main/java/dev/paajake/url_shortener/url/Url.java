@@ -3,6 +3,7 @@ package dev.paajake.url_shortener.url;
 import dev.paajake.url_shortener.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,6 +24,8 @@ public class Url {
 	private String fullUrl;
 
 	@Column(unique = true)
+	@Size(min = 2, message = "Number of characters used for short URL path MUST exceed 2.")
+	@Size(max = 150, message = "Number of characters used for short URL path can NOT exceed 150.")
 	private String shortUrlPath;
 	private Long clicks = 0L;
 
