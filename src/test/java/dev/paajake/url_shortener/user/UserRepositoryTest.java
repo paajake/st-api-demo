@@ -35,5 +35,4 @@ class UserRepositoryTest {
 	void findUserByUsername() {
 	}
 
-
 }
