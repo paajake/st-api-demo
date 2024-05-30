@@ -34,5 +34,5 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-#        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=paajake_st-api-demo_7ca06e74-f77a-4a13-b543-8849c63db5dc -Dsonar.projectName='st-api-demo'
-        run: mvn -B compile org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=paajake_st-api-demo_7ca06e74-f77a-4a13-b543-8849c63db5dc -Dsonar.projectName='st-api-demo'
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=paajake_st-api-demo_7ca06e74-f77a-4a13-b543-8849c63db5dc -Dsonar.projectName='st-api-demo'
+#        run: mvn -B compile org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=paajake_st-api-demo_7ca06e74-f77a-4a13-b543-8849c63db5dc -Dsonar.projectName='st-api-demo'
