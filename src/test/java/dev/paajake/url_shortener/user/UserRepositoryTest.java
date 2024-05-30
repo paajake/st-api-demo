@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserRepositoryTest {
 	@Container
-	static MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8");
+	static MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8").withStartupTimeoutSeconds(180);
 	@Autowired
 	UserRepository userRepository;
 
